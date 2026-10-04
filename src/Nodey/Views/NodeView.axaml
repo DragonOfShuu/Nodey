@@ -1,0 +1,64 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:nodify="https://miroiu.github.io/nodify"
+             x:Class="Nodey.Views.NodeView"
+             FontFamily="{StaticResource Font.Ui}">
+
+    <!--
+        Node View skeleton: palette | graph | preview.
+        The empty NodifyEditor (500×300) sits in the center panel BEHIND the
+        placeholder label — it proves the Nodify package + theme wiring works
+        (canvas background is visible through the 85%-opacity glass panel).
+    -->
+    <Grid ColumnDefinitions="260,*,320">
+
+        <!-- Left: node palette (STEP-4) -->
+        <Border Grid.Column="0" Classes="Glass" Margin="0,0,6,0">
+            <StackPanel Spacing="6" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock Text="Node Palette"
+                           FontSize="16"
+                           FontWeight="SemiBold"
+                           Foreground="{StaticResource Text.Primary}"
+                           HorizontalAlignment="Center" />
+                <TextBlock Text="Node types arrive in STEP-4"
+                           Foreground="{StaticResource Text.Secondary}"
+                           HorizontalAlignment="Center" />
+            </StackPanel>
+        </Border>
+
+        <!-- Center: node graph -->
+        <Border Grid.Column="1" Classes="Glass" Margin="6,0">
+            <Grid>
+                <!-- Hidden test: proves Nodify theme/namespace (STEP-1 acceptance) -->
+                <nodify:NodifyEditor Width="500"
+                                     Height="300"
+                                     HorizontalAlignment="Center"
+                                     VerticalAlignment="Center" />
+                <StackPanel Spacing="6" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <TextBlock Text="Node Graph"
+                               FontSize="16"
+                               FontWeight="SemiBold"
+                               Foreground="{StaticResource Text.Primary}"
+                               HorizontalAlignment="Center" />
+                    <TextBlock Text="The graph editor lives here"
+                               Foreground="{StaticResource Text.Secondary}"
+                               HorizontalAlignment="Center" />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Right: image preview (STEP-4) -->
+        <Border Grid.Column="2" Classes="Glass" Margin="6,0,0,0">
+            <StackPanel Spacing="6" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock Text="Image Preview"
+                           FontSize="16"
+                           FontWeight="SemiBold"
+                           Foreground="{StaticResource Text.Primary}"
+                           HorizontalAlignment="Center" />
+                <TextBlock Text="Rendered output appears here"
+                           Foreground="{StaticResource Text.Secondary}"
+                           HorizontalAlignment="Center" />
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

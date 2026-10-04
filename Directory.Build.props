@@ -1,0 +1,12 @@
+<Project>
+  <!-- Common build settings for every project in the Nodey solution. -->
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <!-- Pinned Avalonia version (11.x only — NodifyAvalonia 6.6.0 is not tested on Avalonia 12). -->
+    <AvaloniaVersion>11.3.22</AvaloniaVersion>
+    <Product>Nodey</Product>
+  </PropertyGroup>
+</Project>

@@ -1,0 +1,26 @@
+# .NET / Visual Studio
+bin/
+obj/
+*.user
+*.suo
+.vs/
+.vscode/
+.idea/
+*.DotSettings.user
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+artifacts/
+TestResults/
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+
+# OS noise
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp

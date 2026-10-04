@@ -1,0 +1,51 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Nodey.Views.DrawView"
+             FontFamily="{StaticResource Font.Ui}">
+
+    <!-- Draw View skeleton: tools | canvas | layers (fleshed out in STEP-5). -->
+    <Grid ColumnDefinitions="260,*,320">
+
+        <!-- Left: tools -->
+        <Border Grid.Column="0" Classes="Glass" Margin="0,0,6,0">
+            <StackPanel Spacing="6" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock Text="Tools"
+                           FontSize="16"
+                           FontWeight="SemiBold"
+                           Foreground="{StaticResource Text.Primary}"
+                           HorizontalAlignment="Center" />
+                <TextBlock Text="Brush, eraser, shapes &amp; more in STEP-5"
+                           Foreground="{StaticResource Text.Secondary}"
+                           HorizontalAlignment="Center" />
+            </StackPanel>
+        </Border>
+
+        <!-- Center: canvas -->
+        <Border Grid.Column="1" Classes="Glass" Margin="6,0">
+            <StackPanel Spacing="6" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock Text="Canvas"
+                           FontSize="16"
+                           FontWeight="SemiBold"
+                           Foreground="{StaticResource Text.Primary}"
+                           HorizontalAlignment="Center" />
+                <TextBlock Text="The paint surface lives here"
+                           Foreground="{StaticResource Text.Secondary}"
+                           HorizontalAlignment="Center" />
+            </StackPanel>
+        </Border>
+
+        <!-- Right: layers -->
+        <Border Grid.Column="2" Classes="Glass" Margin="6,0,0,0">
+            <StackPanel Spacing="6" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock Text="Layers"
+                           FontSize="16"
+                           FontWeight="SemiBold"
+                           Foreground="{StaticResource Text.Primary}"
+                           HorizontalAlignment="Center" />
+                <TextBlock Text="Layer stack appears here"
+                           Foreground="{StaticResource Text.Secondary}"
+                           HorizontalAlignment="Center" />
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

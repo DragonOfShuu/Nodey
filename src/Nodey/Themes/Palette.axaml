@@ -1,0 +1,42 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!--
+        Nodey palette — "Web3 × Unreal Engine" (PLAN.md §8).
+        All colors from the spec, as brush resources. Nodify's own Color keys
+        are overridden in NodifyTheme.axaml (last include, so it wins).
+    -->
+
+    <!-- Base surfaces -->
+    <SolidColorBrush x:Key="Background.Base" Color="#0A0E17" />
+    <!-- Glass: #111827 at 85% opacity + 1px border + CornerRadius 12 (see Border.Glass in App.axaml) -->
+    <SolidColorBrush x:Key="Background.Panel" Color="#111827" Opacity="0.85" />
+    <SolidColorBrush x:Key="Background.Elevated" Color="#1E293B" />
+
+    <!-- Accents -->
+    <SolidColorBrush x:Key="Accent.Cyan" Color="#22D3EE" />
+    <SolidColorBrush x:Key="Accent.Magenta" Color="#F0439B" />
+    <SolidColorBrush x:Key="Accent.Violet" Color="#8B5CF6" />
+    <SolidColorBrush x:Key="Accent.Green" Color="#34D399" />
+    <SolidColorBrush x:Key="Accent.Amber" Color="#FBBF24" />
+
+    <!-- Text -->
+    <SolidColorBrush x:Key="Text.Primary" Color="#F8FAFC" />
+    <SolidColorBrush x:Key="Text.Secondary" Color="#94A3B8" />
+    <SolidColorBrush x:Key="Text.Disabled" Color="#475569" />
+
+    <!-- Shape language: 1px borders at 20–40% white -->
+    <SolidColorBrush x:Key="Border.Subtle" Color="#33FFFFFF" />
+    <SolidColorBrush x:Key="Border.Strong" Color="#66FFFFFF" />
+
+    <!-- Node header gradient: #6366F1 → #A855F7 → #EC4899 -->
+    <LinearGradientBrush x:Key="Node.HeaderGradient" StartPoint="0%,0%" EndPoint="100%,0%">
+        <GradientStop Color="#6366F1" Offset="0" />
+        <GradientStop Color="#A855F7" Offset="0.55" />
+        <GradientStop Color="#EC4899" Offset="1" />
+    </LinearGradientBrush>
+
+    <!-- Connection stroke = Accent.Cyan (with glow, per PLAN.md §8) -->
+    <SolidColorBrush x:Key="Connection.Stroke" Color="#22D3EE" />
+    <!-- Selection = Accent.Violet -->
+    <SolidColorBrush x:Key="Selection.Glow" Color="#8B5CF6" />
+</ResourceDictionary>

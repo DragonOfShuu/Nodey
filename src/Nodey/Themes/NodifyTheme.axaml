@@ -1,0 +1,91 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:nodify="https://miroiu.github.io/nodify">
+    <!--
+        Nodey override layer for Nodify (included LAST in App.axaml, so it wins
+        the resource search over Nodify's own Theme.axaml).
+        Nodify's brushes (Brushes.xaml) reference these Color keys via
+        DynamicResource, so overriding the colors re-themes every Nodify control.
+        Key names mirror Nodify/Themes/Dark.xaml (v6.6.0).
+    -->
+
+    <!-- Editor canvas -->
+    <Color x:Key="NodifyEditor.BackgroundColor">#0D1220</Color>
+    <Color x:Key="NodifyEditor.ForegroundColor">#F8FAFC</Color>
+    <Color x:Key="NodifyEditor.SelectionRectangleColor">#8B5CF6</Color>
+    <Color x:Key="NodifyEditor.PushedAreaColor">#1E293B</Color>
+    <Color x:Key="NodifyEditor.CuttingLineColor">#FBBF24</Color>
+
+    <!-- Item containers (nodes in the editor's ItemsControl) -->
+    <Color x:Key="ItemContainer.BorderColor">#334155</Color>
+    <Color x:Key="ItemContainer SelectedColor">#8B5CF6</Color>
+
+    <!-- Nodes -->
+    <Color x:Key="Node.BackgroundColor">#1E293B</Color>
+    <Color x:Key="Node.ContentColor">#0F172A</Color>
+    <Color x:Key="Node.ForegroundColor">#F8FAFC</Color>
+    <Color x:Key="Node.HeaderForegroundColor">#F8FAFC</Color>
+    <Color x:Key="Node.HeaderColor">#6366F1</Color>
+    <Color x:Key="Node.FooterColor">#0F172A</Color>
+    <Color x:Key="Node.BorderColor">#334155</Color>
+
+    <!-- State nodes -->
+    <Color x:Key="StateNode.BackgroundColor">#1E293B</Color>
+    <Color x:Key="StateNode.ForegroundColor">#F8FAFC</Color>
+    <Color x:Key="StateNode.BorderColor">#334155</Color>
+    <Color x:Key="StateNode.HighlightColor">#FBBF24</Color>
+
+    <!-- Grouping nodes -->
+    <Color x:Key="GroupingNode.BackgroundColor">#111827</Color>
+    <Color x:Key="GroupingNode.ForegroundColor">#F8FAFC</Color>
+    <Color x:Key="GroupingNode.HeaderColor">#1E293B</Color>
+    <Color x:Key="GroupingNode.BorderColor">#334155</Color>
+
+    <!-- Knot nodes (grouping ports) -->
+    <Color x:Key="KnotNode.BackgroundColor">#1E293B</Color>
+    <Color x:Key="KnotNode.ForegroundColor">#F8FAFC</Color>
+    <Color x:Key="KnotNode.BorderColor">#334155</Color>
+
+    <!-- Connectors -->
+    <Color x:Key="Connector.BackgroundColor">#0F172A</Color>
+    <Color x:Key="Connector.ForegroundColor">#F8FAFC</Color>
+    <Color x:Key="Connector.BorderColor">#22D3EE</Color>
+
+    <!-- Input / output pins -->
+    <Color x:Key="NodeInput.BackgroundColor">#0F172A</Color>
+    <Color x:Key="NodeInput.ForegroundColor">#F8FAFC</Color>
+    <Color x:Key="NodeInput.BorderColor">#22D3EE</Color>
+    <Color x:Key="NodeOutput.BackgroundColor">#0F172A</Color>
+    <Color x:Key="NodeOutput.ForegroundColor">#F8FAFC</Color>
+    <Color x:Key="NodeOutput.BorderColor">#22D3EE</Color>
+
+    <!-- Connections (wires) — Accent.Cyan -->
+    <Color x:Key="Connection.StrokeColor">#22D3EE</Color>
+    <Color x:Key="LineConnection.StrokeColor">#22D3EE</Color>
+    <Color x:Key="CircuitConnection.StrokeColor">#22D3EE</Color>
+    <Color x:Key="StepConnection.StrokeColor">#22D3EE</Color>
+
+    <!-- Pending connections (while dragging) — Accent.Violet -->
+    <Color x:Key="PendingConnection.BackgroundColor">#8B5CF6</Color>
+    <Color x:Key="PendingConnection.ForegroundColor">#F8FAFC</Color>
+    <Color x:Key="PendingConnection.BorderColor">#8B5CF6</Color>
+    <Color x:Key="PendingConnection.StrokeColor">#8B5CF6</Color>
+
+    <!-- Minimap -->
+    <Color x:Key="Minimap.BackgroundColor">#0D1220</Color>
+    <Color x:Key="MinimapItem.BackgroundColor">#334155</Color>
+    <Color x:Key="Minimap.ViewportBackgroundColor">#8B5CF6</Color>
+    <Color x:Key="Minimap.ViewportStrokeColor">#8B5CF6</Color>
+
+    <!--
+        Node header gradient: replace the implicit Node theme with one that
+        keeps Nodify's whole theme chain (BasedOn resolves to Nodify's own
+        override theme, which is BasedOn on its base theme) but paints the
+        header with the Web3 gradient.
+    -->
+    <ControlTheme x:Key="{x:Type nodify:Node}"
+                  TargetType="{x:Type nodify:Node}"
+                  BasedOn="{StaticResource {x:Type nodify:Node}}">
+        <Setter Property="HeaderBrush" Value="{StaticResource Node.HeaderGradient}" />
+    </ControlTheme>
+</ResourceDictionary>

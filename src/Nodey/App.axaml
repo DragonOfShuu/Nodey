@@ -1,0 +1,54 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Nodey.App"
+             RequestedThemeVariant="Dark">
+
+    <!--
+        Resource merge order matters (PLAN.md §8): Nodify's theme first, then
+        our palette/fonts/controls, and NodifyTheme.axaml LAST so every key we
+        define wins the search over Nodify's defaults.
+    -->
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceInclude Source="avares://Nodify/Theme.axaml" />
+                <ResourceInclude Source="avares://Nodey/Themes/Palette.axaml" />
+                <ResourceInclude Source="avares://Nodey/Themes/Fonts.axaml" />
+                <ResourceInclude Source="avares://Nodey/Themes/Controls.axaml" />
+                <ResourceInclude Source="avares://Nodey/Themes/NodifyTheme.axaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+
+    <Application.Styles>
+        <FluentTheme />
+
+        <!-- Fluent's accent, re-pointed at our violet so focus borders,
+             selection and other accent-driven details theme globally. -->
+        <Style Selector="Window">
+            <Setter Property="Background" Value="{StaticResource Background.Base}" />
+        </Style>
+
+        <!-- Panel.Glass — the glass panel: #111827 @85%, 1px border, radius 12,
+             soft drop shadow (apply with Classes="Glass" on a Border). -->
+        <Style Selector="Border.Glass">
+            <Setter Property="Background" Value="{StaticResource Background.Panel}" />
+            <Setter Property="BorderBrush" Value="{StaticResource Border.Subtle}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="12" />
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="#000000" BlurRadius="16" OffsetX="0" OffsetY="4" Opacity="0.35" />
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Thin dark scrollbars -->
+        <Style Selector="ScrollBar:vertical">
+            <Setter Property="Width" Value="8" />
+        </Style>
+        <Style Selector="ScrollBar:horizontal">
+            <Setter Property="Height" Value="8" />
+        </Style>
+    </Application.Styles>
+</Application>

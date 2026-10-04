@@ -1,0 +1,23 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:Nodey.ViewModels"
+        xmlns:views="clr-namespace:Nodey.Views"
+        x:Class="Nodey.MainWindow"
+        x:DataType="vm:ShellViewModel"
+        Title="Nodey"
+        Width="1440"
+        Height="900"
+        MinWidth="1280"
+        MinHeight="800"
+        ExtendClientAreaToDecorationsHint="True"
+        FontFamily="{StaticResource Font.Ui}"
+        FontSize="13"
+        Foreground="{StaticResource Text.Primary}"
+        Background="{StaticResource Background.Base}">
+
+    <Window.DataContext>
+        <vm:ShellViewModel />
+    </Window.DataContext>
+
+    <views:ShellView />
+</Window>

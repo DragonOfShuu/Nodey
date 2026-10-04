@@ -1,0 +1,121 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!--
+        Nodey control themes (PLAN.md §8 shape language: rounded 6–12,
+        glass panels, accent focus/selection, hover brightens 10–15%).
+        Keyed themes are applied via the Theme="..." property; the type-keyed
+        themes (TextBox/Slider/ComboBox) restyle those controls app-wide and
+        are found first by implicit theme lookup (this dictionary is included
+        before Nodify's, but after the Fluent defaults resolve via BasedOn).
+    -->
+
+    <!-- ============ Button.Primary — violet action button ============ -->
+    <ControlTheme x:Key="Button.Primary"
+                  TargetType="Button"
+                  BasedOn="{StaticResource {x:Type Button}}">
+        <Setter Property="Background" Value="{StaticResource Accent.Violet}" />
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="14 7" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Style Selector="^:pointerover:not(:disabled)">
+            <Setter Property="Background" Value="#9B7CF8" />
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="#8B5CF6" BlurRadius="18" OffsetX="0" OffsetY="2" Opacity="0.55" />
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style Selector="^:disabled">
+            <Setter Property="Background" Value="{StaticResource Text.Disabled}" />
+            <Setter Property="Foreground" Value="#94A3B8" />
+        </Style>
+    </ControlTheme>
+
+    <!-- ============ Button.Icon — 32×32 square icon button ============ -->
+    <ControlTheme x:Key="Button.Icon"
+                  TargetType="Button"
+                  BasedOn="{StaticResource {x:Type Button}}">
+        <Setter Property="Width" Value="32" />
+        <Setter Property="Height" Value="32" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{StaticResource Text.Primary}" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Style Selector="^:pointerover:not(:disabled)">
+            <Setter Property="Background" Value="{StaticResource Background.Elevated}" />
+        </Style>
+        <Style Selector="^:pressed:not(:disabled)">
+            <Setter Property="Background" Value="{StaticResource Border.Subtle}" />
+        </Style>
+        <Style Selector="^:disabled">
+            <Setter Property="Foreground" Value="{StaticResource Text.Disabled}" />
+        </Style>
+    </ControlTheme>
+
+    <!-- ============ Tab.Pill — segmented pill tab (RadioButton) ============ -->
+    <ControlTheme x:Key="Tab.Pill"
+                  TargetType="RadioButton"
+                  BasedOn="{StaticResource {x:Type RadioButton}}">
+        <Setter Property="Foreground" Value="{StaticResource Text.Secondary}" />
+        <Setter Property="Padding" Value="16 7" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="RadioButton">
+                    <Border x:Name="PART_Border"
+                            Background="Transparent"
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            Padding="{TemplateBinding Padding}">
+                        <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Content="{TemplateBinding Content}" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style Selector="^:pointerover /template/ Border#PART_Border">
+            <Setter Property="Background" Value="{StaticResource Background.Elevated}" />
+        </Style>
+        <Style Selector="^:checked">
+            <Setter Property="Foreground" Value="#FFFFFF" />
+        </Style>
+        <Style Selector="^:checked /template/ Border#PART_Border">
+            <Setter Property="Background" Value="{StaticResource Accent.Violet}" />
+        </Style>
+        <Style Selector="^:checked:pointerover /template/ Border#PART_Border">
+            <Setter Property="Background" Value="#9B7CF8" />
+        </Style>
+    </ControlTheme>
+
+    <!-- ============ TextBox — app-wide dark restyle ============ -->
+    <ControlTheme x:Key="{x:Type TextBox}"
+                  TargetType="TextBox"
+                  BasedOn="{StaticResource {x:Type TextBox}}">
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Background" Value="{StaticResource Background.Elevated}" />
+        <Setter Property="Foreground" Value="{StaticResource Text.Primary}" />
+        <Setter Property="MinHeight" Value="30" />
+    </ControlTheme>
+
+    <!-- ============ Slider — app-wide dark restyle ============ -->
+    <ControlTheme x:Key="{x:Type Slider}"
+                  TargetType="Slider"
+                  BasedOn="{StaticResource {x:Type Slider}}">
+        <Setter Property="Background" Value="{StaticResource Background.Elevated}" />
+        <Setter Property="MinHeight" Value="24" />
+    </ControlTheme>
+
+    <!-- ============ ComboBox — app-wide dark restyle ============ -->
+    <ControlTheme x:Key="{x:Type ComboBox}"
+                  TargetType="ComboBox"
+                  BasedOn="{StaticResource {x:Type ComboBox}}">
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Background" Value="{StaticResource Background.Elevated}" />
+        <Setter Property="Foreground" Value="{StaticResource Text.Primary}" />
+        <Setter Property="MinHeight" Value="30" />
+    </ControlTheme>
+</ResourceDictionary>

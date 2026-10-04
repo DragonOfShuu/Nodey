@@ -1,0 +1,3 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Nodey.Core is UI-free: no Avalonia references (PLAN.md §3 hard rule). -->
+</Project>

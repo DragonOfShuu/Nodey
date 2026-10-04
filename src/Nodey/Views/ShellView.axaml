@@ -1,0 +1,62 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:Nodey.ViewModels"
+             xmlns:views="clr-namespace:Nodey.Views"
+             x:Class="Nodey.Views.ShellView"
+             x:DataType="vm:ShellViewModel"
+             FontFamily="{StaticResource Font.Ui}">
+
+    <Grid RowDefinitions="56,*" Margin="12">
+
+        <!-- ===== Top bar: logo | tab pills | document + save ===== -->
+        <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto" Margin="0,0,0,12">
+
+            <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+                <TextBlock Text="◈"
+                           FontSize="20"
+                           Foreground="{StaticResource Accent.Cyan}"
+                           VerticalAlignment="Center" />
+                <TextBlock Text="Nodey"
+                           FontFamily="{StaticResource Font.Display}"
+                           FontSize="18"
+                           FontWeight="Bold"
+                           Foreground="{StaticResource Text.Primary}"
+                           VerticalAlignment="Center" />
+            </StackPanel>
+
+            <!-- Segmented pill tabs (auto-grouped RadioButtons) -->
+            <StackPanel Grid.Column="1"
+                        Orientation="Horizontal"
+                        Spacing="6"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center">
+                <Border Background="{StaticResource Background.Elevated}"
+                        CornerRadius="10"
+                        Padding="4"
+                        VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal" Spacing="4">
+                        <RadioButton Theme="{StaticResource Tab.Pill}"
+                                     Content="Node View"
+                                     IsChecked="{Binding IsNodeViewActive}" />
+                        <RadioButton Theme="{StaticResource Tab.Pill}"
+                                     Content="Draw View"
+                                     IsChecked="{Binding IsDrawViewActive}" />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+                <TextBlock Text="Untitled"
+                           Foreground="{StaticResource Text.Secondary}"
+                           VerticalAlignment="Center" />
+                <Button Theme="{StaticResource Button.Primary}"
+                        Content="Save"
+                        IsEnabled="False" />
+            </StackPanel>
+        </Grid>
+
+        <!-- ===== Views (both stay loaded; only visibility switches) ===== -->
+        <views:NodeView Grid.Row="1" IsVisible="{Binding IsNodeViewActive}" />
+        <views:DrawView Grid.Row="1" IsVisible="{Binding IsDrawViewActive}" />
+    </Grid>
+</UserControl>

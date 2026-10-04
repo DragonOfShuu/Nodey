@@ -1,0 +1,13 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!--
+        Nodey typography (PLAN.md §8).
+        Inter is bundled via Avalonia.Fonts.Inter (see Program.cs .WithInterFont()).
+        Display typeface (Rajdhani/Orbitron) is a later-step concern; all keys
+        resolve to Inter for now so views can bind FontFamily freely.
+    -->
+
+    <FontFamily x:Key="Font.Ui">Inter</FontFamily>
+    <FontFamily x:Key="Font.Mono">Inter</FontFamily>
+    <FontFamily x:Key="Font.Display">Inter</FontFamily>
+</ResourceDictionary>
