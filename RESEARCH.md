@@ -320,3 +320,125 @@ relevant to Nodey (paths relative to repo root):
 - The real performance risk is **pixel work** (noise generation, filters on full-res buffers).
   Mitigations are in PLAN.md § Image Engine: fixed canvas resolution, float32 buffers,
   background-thread evaluation, dirty-flag propagation, preview downscaling.
+
+## 11. XAML source-generator gotchas (learned the hard way, STEP-1)
+
+These are compile-time errors from Avalonia's XAML source generator (the Roslyn analyzer in
+`~/.nuget/packages/avalonia/<ver>/analyzers/dotnet/cs/Avalonia.Generators.dll`). All cost
+build cycles to discover — do not repeat:
+
+- **`AVLN3000: Value types can only be loaded via converters`** — you cannot write a
+  value-type resource as a *constructed object*:
+
+  ```xml
+  <!-- ❌ fails: attribute form = the generator tries to CONSTRUCT an Avalonia.Color -->
+  <Color x:Key="Node.BackgroundColor" Color="#1E293B" />
+  <!-- ✅ works: content form = the string is type-converted (this is how Nodify's own
+        Themes/Dark.xaml declares all 46 of its Color keys) -->
+  <Color x:Key="Node.BackgroundColor">#1E293B</Color>
+  ```
+
+  The generator's `ConstructableObjectTransformer` throws unconditionally for any XAML object
+  node whose CLR type is a value type. Content (string) values go through the converter path
+  instead. Applies to `Color`, `Thickness`, `Point`, `CornerRadius`, etc.
+
+- **`<ResourceInclude>` is not a direct child of `Application.Resources`.** It must be wrapped
+  in a `ResourceDictionary` with `MergedDictionaries`:
+
+  ```xml
+  <Application.Resources>
+      <ResourceDictionary>
+          <ResourceDictionary.MergedDictionaries>
+              <ResourceInclude Source="avares://Nodify/Theme.axaml" />
+              <!-- ... -->
+          </ResourceDictionary.MergedDictionaries>
+      </ResourceDictionary>
+  </Application.Resources>
+  ```
+
+  `ResourceInclude` (in `Avalonia.Markup.Xaml.Styling`) is an `IResourceProvider` with a
+  `Source` (Uri) property — it is designed for `MergedDictionaries`.
+
+- **`DropShadowEffect` has no `Offset`** — it's `OffsetX` / `OffsetY` (separate doubles).
+
+- **Don't put `x:DataType` on `Application`** unless the type actually resolves; a stray
+  `x:DataType="vm:App"` pointing at the wrong namespace is a build error, not a warning.
+
+- **Error triage**: `AVLN2000` = resolver failure (type/property not found), `AVLN3000` =
+  semantic/transform failure (constructor, setter, value-type rules). To find the exact
+  failing transformer, decompile the generator:
+  `ilspycmd ~/.nuget/packages/avalonia/<ver>/analyzers/dotnet/cs/Avalonia.Generators.dll`.
+
+## 12. Resource resolution order (decompiled from Avalonia 11.3.22)
+
+Verified by decompiling `Avalonia.Base.dll` / `Avalonia.Controls.dll`. This is why the
+STEP-1 Nodify re-theme works the way it does:
+
+- `ResourceDictionary.TryGetResource` checks, in order: **(1)** its own entries, **(2)** its
+  theme dictionaries, **(3)** its merged dictionaries **in REVERSE include order** — i.e. the
+  **last** `<ResourceInclude>` in `MergedDictionaries` has the **highest** priority.
+- `DynamicResource` on a control resolves through the control's resource *host* — for
+  app-level resources that's the `Application`. `Application.TryGetResource` checks
+  `Application.Resources` first, then `Application.Styles`.
+- `StaticResource` in XAML walks the XAML parent/resource scope and can also reach
+  `Application.Styles` (that's how `BasedOn="{StaticResource {x:Type X}}"` finds Fluent
+  themes).
+- **Consequence**: to re-theme a third-party control library, override the *leaf keys* the
+  library's brushes reference (see §13), in a dictionary merged **after** the library's.
+  App-level `Style` setters can never beat a `ControlTheme`'s setters (theme frame wins:
+  `FramePriority = (priority+1)*3 + frameType`, Theme frame = 2 > Style frame = 0).
+- To change a control's *template-level* look (e.g. a gradient header), replace its implicit
+  theme: define a type-keyed `ControlTheme x:Key="{x:Type nodify:Node}"` in app resources —
+  the type-keyed lookup finds the app-level entry before the library's.
+
+## 13. Nodify 6.6.0 theme architecture + the re-theme strategy that works
+
+File map (all under `avares://Nodify/`):
+
+```
+Theme.axaml            → merges Themes/Generic.xaml + ThemeDictionaries {Light, Dark}
+Themes/Generic.xaml    → merges Styles/Controls.xaml (templates) + Themes/Controls.xaml (ControlThemes)
+Themes/Controls.xaml  → merges Brushes.xaml; per-control ControlThemes (incl. the Node override)
+Themes/Dark.xaml      → 46 <Color> keys (content form, §11)
+Themes/Brushes.xaml   → SolidColorBrush per key, each Color = {DynamicResource <ColorKey>}
+Styles/Node.xaml      → base Node ControlTheme: full template + hardcoded colors
+```
+
+Key facts:
+
+- Nodify's brushes are `SolidColorBrush` whose `Color` is a **`{DynamicResource}` on the
+  Color key** (e.g. `Node.HeaderColor`). So overriding the **Color keys** (not the brushes)
+  in a later-merged dictionary re-themes every Nodify control. Overriding the *brush* keys
+  at app level does **not** reach `StaticResource` references inside Nodify's own themes.
+- The **Node** visual theme is a two-step chain: base in `Styles/Node.xaml` (template +
+  hardcoded colors) → override in `Themes/Controls.xaml` (`BasedOn` base, swaps hardcoded
+  colors for brush-key references). The header brush property is **`Node.HeaderBrush`**
+  (not `HeaderColor` — that's the Color key the default brush uses).
+- Compiled Nodify registers themes as **deferred items** (`AddDeferred(typeof(Node), …)`);
+  `BasedOn` compiles to a `StaticResourceExtension` resolved at runtime through the XAML
+  parent/resource scope. A self-referencing type-keyed `BasedOn` (my theme's
+  `BasedOn="{StaticResource {x:Type nodify:Node}}"`) is **safe**: the deferred-item
+  reentrancy guard skips the key currently being built, so the lookup continues outward to
+  Nodify's themes.
+- Nodify's XAML namespace mapping (from assembly attributes):
+  `XmlnsDefinition("https://miroiu.github.io/nodify", "Nodify")` →
+  `xmlns:nodify="https://miroiu.github.io/nodify"`.
+
+The STEP-1 implementation of all this lives in `src/Nodey/Themes/NodifyTheme.axaml`
+(46 Color key overrides + the gradient `Node.HeaderGradient` header theme) and
+`src/Nodey/App.axaml` (merge order: Nodify first, NodifyTheme **last**).
+
+## 14. Other verified facts from STEP-1
+
+- **Avalonia 11 has no WPF-style `CommandManager`.** `RelayCommand` must raise a plain
+  `CanExecuteChanged` event + `RaiseCanExecuteChanged()` (see
+  `src/Nodey/ViewModels/RelayCommand.cs`).
+- **Runtime XAML/binding errors go to the console** (Avalonia's `LogToTrace`). An empty
+  console after launch is a good signal (not proof) that XAML loaded and all
+  bindings resolved. For hard verification use `Avalonia.Headless` (see §7).
+- **Test-project gotcha**: `typeof(X).Assembly.GetReferencedAssemblies()` returned no
+  useful result for a ProjectReference in xUnit; `Assembly.Load("Nodey.Core")` works
+  reliably (the assembly sits next to the test host).
+- **Screenshotting on this machine** (Hyprland/Wayland): `import`/`scrot`/`xwd` are not
+  usable; `ffmpeg -f x11grab -video_size WxH -i :0.0 -frames:v 1 out.png` works via
+  XWayland (unset `WAYLAND_DISPLAY` first).
