@@ -439,6 +439,26 @@ The STEP-1 implementation of all this lives in `src/Nodey/Themes/NodifyTheme.axa
 - **Test-project gotcha**: `typeof(X).Assembly.GetReferencedAssemblies()` returned no
   useful result for a ProjectReference in xUnit; `Assembly.Load("Nodey.Core")` works
   reliably (the assembly sits next to the test host).
-- **Screenshotting on this machine** (Hyprland/Wayland): `import`/`scrot`/`xwd` are not
-  usable; `ffmpeg -f x11grab -video_size WxH -i :0.0 -frames:v 1 out.png` works via
-  XWayland (unset `WAYLAND_DISPLAY` first).
+- **This machine runs Niri 26.04** (NOT Hyprland — config is `~/.config/niri/config.kdl`).
+  Screenshotting for AI verification:
+  - `grim`/`slurp`/`niri-msg` are **not installed**; `import`/`scrot`/`xwd` are absent or
+    broken; and **`ffmpeg -f x11grab` captures black** — Avalonia apps run as native
+    Wayland surfaces, so the X11/XWayland root is empty. Don't bother with X11 tools.
+  - **What works: Niri's IPC.** Connect to the Unix socket
+    `/run/user/$UID/niri-<WAYLAND_DISPLAY>.<pid>.sock` (glob it; also `$NIRI_SOCKET` if set)
+    and send one JSON request per line. Verified working:
+
+    ```python
+    import socket, json, glob, os
+    s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+    s.connect(glob.glob(f"/run/user/{os.getuid()}/niri.*.sock")[0])
+    req = {"Action": {"ScreenshotScreen": {"write_to_disk": True, "show_pointer": False,
+                                          "path": "/tmp/shot.png"}}}
+    s.sendall((json.dumps(req) + "\n").encode())
+    print(s.recv(8192))  # b'{"Ok":"Handled"}\n' — file then appears at the path
+    ```
+
+    `Action` variants (niri-ipc crate): `ScreenshotScreen` (focused screen),
+    `ScreenshotWindow { id: null = focused window, … }`, `Screenshot` (opens the
+    **interactive** screenshot UI — avoid for automation). `path` must be absolute;
+    `write_to_disk: true` also puts it on the clipboard. Full protocol: docs.rs/niri-ipc.
